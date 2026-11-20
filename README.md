@@ -13,7 +13,7 @@ Built to never touch your games — so it works with every game, anti-cheat incl
 
 | | |
 |---|---|
-| **Display tuning** | Hue, saturation, vibrance, red/green/blue, brightness, contrast, gamma and colour temperature, per display. Live before/after preview that uses the exact same maths as the engine, plus tone-curve view. |
+| **Display tuning** |  Hue, saturation, vibrance, red/green/blue, brightness, contrast, gamma and colour temperature, per display. Live before/after preview that uses the exact same maths as the engine, plus tone-curve view. |
 | **Presets** | 11 built-in looks (Ultra Vivid, Night Vision, Competitive Clarity…), your own presets, share codes (`RKP1-…`), and **game profiles** that switch preset automatically while a game is in focus. |
 | **Stretched resolution** | 1440×1080, 1280×960, 1280×1024, custom… with stretched / black-bars / centred scaling, a 15-second “keep or revert” safety net, a hotkey, and **auto stretch** while chosen games run. |
 | **Crosshair** | 12 designs, colours, ring/arm/gap/thickness/dot/outline/opacity, rotate 45°, T-shape, 8 save slots, share codes (`RKX1-…`). Pixel-exact “actual size” preview. |
