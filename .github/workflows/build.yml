@@ -1,13 +1,16 @@
 name: Build & release
 
 # Every push / pull request: tests + a full Windows build (downloadable as a
-# workflow artifact). Pushing a tag like v1.2.3: the same build is published
-# as a GitHub Release — which is what the in-app auto-updater installs.
+# workflow artifact). A tag like v1.2.3 — pushed with git, or created by
+# publishing a release on GitHub — publishes the same build as release
+# assets, which is what the in-app auto-updater installs.
 
 on:
   push:
     branches: ['**']
     tags: ['v*']
+  release:
+    types: [published]
   pull_request:
   workflow_dispatch:
 

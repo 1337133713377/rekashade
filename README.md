@@ -90,6 +90,12 @@ go test ./internal/colorx/... ./internal/config/... ./internal/updater/...
 
 ## Publishing a release (feeds the auto-updater)
 
+**From GitHub (no tools needed):** *Releases › Draft a new release* › *Choose a tag* › type `v1.0.1`
+› *Create new tag on publish* › pick the branch with the code › *Publish release*. The workflow builds the
+app and attaches `RekaShade.exe`, the installer and `SHA256SUMS.txt` to that release a few minutes later.
+
+**From the command line:**
+
 1. Bump `info.productVersion` in `wails.json`.
 2. Tag and push:
 
@@ -135,4 +141,4 @@ réglage. C'est pour ça que ça marche sur tous les jeux, même avec un anti-tr
 - **Mises à jour automatiques :** au démarrage, Reka Shade vérifie la dernière version sur GitHub, la télécharge, vérifie son empreinte SHA-256, la remplace et redémarre. Vos réglages (`%APPDATA%\RekaShade`) sont conservés.
 - **Langue :** l'interface est en français si Windows l'est (modifiable dans *Paramètres*).
 - **Bon à savoir :** en plein écran exclusif, le jeu passe par-dessus toute superposition et le moteur couleur de Windows — utilisez le mode fenêtré sans bordure pour le viseur, la teinte et la saturation. Les tons et la vibrance GPU marchent dans tous les modes. Certaines plateformes compétitives interdisent les viseurs en superposition : vérifiez les règles.
-- **Publier une version :** changez `info.productVersion` dans `wails.json`, puis poussez un tag `vX.Y.Z` — GitHub Actions construit l'exe et l'installateur et publie la release que les copies installées récupèrent automatiquement.
+- **Publier une version :** sur GitHub, *Releases › Draft a new release* › tag `vX.Y.Z` (*Create new tag on publish*) › *Publish release* — ou poussez un tag `vX.Y.Z`. GitHub Actions construit l'exe et l'installateur, les attache à la release, et les copies installées se mettent à jour automatiquement.
