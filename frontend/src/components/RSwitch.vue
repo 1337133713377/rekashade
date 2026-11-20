@@ -34,4 +34,12 @@ const emit = defineEmits<{ 'update:modelValue': [v: boolean] }>()
   transition: left var(--t-med) var(--ease);
 }
 .sw-thumb[data-state='checked'] { left: calc(var(--w) - var(--k) - 5px); }
+/* Windows contrast themes: keep the switch and its state visible. */
+@media (forced-colors: active) {
+  .sw { forced-color-adjust: none; background: Canvas; border: 2px solid ButtonText; box-shadow: none; }
+  .sw[data-state='checked'] { background: Highlight; border-color: Highlight; box-shadow: none; }
+  .sw-thumb { background: ButtonText; box-shadow: none; }
+  .sw-thumb[data-state='checked'] { background: HighlightText; }
+  .sw:focus-visible { outline: 2px solid Highlight; outline-offset: 2px; }
+}
 </style>

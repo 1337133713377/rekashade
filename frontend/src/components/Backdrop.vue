@@ -31,11 +31,14 @@
     radial-gradient(1px 1px at 94% 86%, #fff4, transparent), radial-gradient(1.5px 1.5px at 64% 88%, #fff5, transparent);
 }
 .vignette { position: absolute; inset: 0; background: radial-gradient(120% 100% at 50% 40%, transparent 55%, rgba(0, 0, 0, 0.45)); }
-:global(:root[data-backdrop='midnight']) .glow { opacity: 0.32; }
-:global(:root[data-backdrop='midnight']) .streak { opacity: 0.25; }
-:global(:root[data-backdrop='oled']) .glow,
-:global(:root[data-backdrop='oled']) .streak,
-:global(:root[data-backdrop='oled']) .stars { display: none; }
-:global(:root[data-backdrop='nebula']) .g2 { opacity: 0.5; background: radial-gradient(circle, #db2777, transparent 65%); }
-:global(:root[data-backdrop='nebula']) .g3 { opacity: 0.6; background: radial-gradient(circle, #1d4ed8, transparent 70%); }
+/* No :global() here: in a scoped block, ":global(X) .glow" compiles to just
+   "X", which put these rules on <html> itself (Midnight dimmed the whole app
+   to 25%, OLED hid it). A plain ancestor selector stays scoped to .glow etc. */
+:root[data-backdrop='midnight'] .glow { opacity: 0.32; }
+:root[data-backdrop='midnight'] .streak { opacity: 0.25; }
+:root[data-backdrop='oled'] .glow,
+:root[data-backdrop='oled'] .streak,
+:root[data-backdrop='oled'] .stars { display: none; }
+:root[data-backdrop='nebula'] .g2 { opacity: 0.5; background: radial-gradient(circle, #db2777, transparent 65%); }
+:root[data-backdrop='nebula'] .g3 { opacity: 0.6; background: radial-gradient(circle, #1d4ed8, transparent 70%); }
 </style>

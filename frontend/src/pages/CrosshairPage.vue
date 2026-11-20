@@ -94,12 +94,12 @@ async function paste() {
 
         <div class="label-caps">{{ t('xh.color') }}</div>
         <div class="swatches">
-          <button v-for="c in palette" :key="c" class="sw" :class="{ active: xh.color.toUpperCase() === c.toUpperCase() }" :style="{ background: c }" :aria-label="c" @click="state.cfg.crosshair.color = c" />
+          <button v-for="c in palette" :key="c" class="sw swatch" :class="{ active: xh.color.toUpperCase() === c.toUpperCase() }" :style="{ background: c }" :aria-label="c" @click="state.cfg.crosshair.color = c" />
           <button class="sw add" :aria-label="t('xh.pickColor')" @click="colorInput?.click()"><Plus :size="18" /></button>
           <input ref="colorInput" type="color" class="hidden" :value="xh.color" @change="addColor" />
           <div class="spacer" />
           <span class="label-caps">{{ t('xh.outlineColor') }}</span>
-          <button v-for="c in ['#000000', '#FFFFFF']" :key="'o' + c" class="sw small" :class="{ active: xh.outlineColor.toUpperCase() === c }" :style="{ background: c }" :aria-label="c" @click="state.cfg.crosshair.outlineColor = c" />
+          <button v-for="c in ['#000000', '#FFFFFF']" :key="'o' + c" class="sw small swatch" :class="{ active: xh.outlineColor.toUpperCase() === c }" :style="{ background: c }" :aria-label="c" @click="state.cfg.crosshair.outlineColor = c" />
         </div>
 
         <div class="label-caps">{{ t('xh.my') }}</div>

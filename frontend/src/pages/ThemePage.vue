@@ -28,7 +28,7 @@ const BACKDROPS: { id: Backdrop; bg: string }[] = [
       <h2 class="card-title sm">{{ t('theme.accent') }}</h2>
       <div class="accents">
         <button v-for="a in ACCENTS" :key="a.id" class="acc" :class="{ active: state.cfg.theme.accent === a.id }" @click="state.cfg.theme.accent = a.id">
-          <span class="dot" :style="{ background: `linear-gradient(135deg, ${a.c[0]}, ${a.c[1]})` }"><Check v-if="state.cfg.theme.accent === a.id" :size="18" :stroke-width="3" /></span>
+          <span class="dot swatch" :style="{ background: `linear-gradient(135deg, ${a.c[0]}, ${a.c[1]})` }"><Check v-if="state.cfg.theme.accent === a.id" :size="18" :stroke-width="3" /></span>
           <span>{{ t('theme.accents.' + a.id) }}</span>
         </button>
       </div>
@@ -37,7 +37,7 @@ const BACKDROPS: { id: Backdrop; bg: string }[] = [
       <h2 class="card-title sm">{{ t('theme.backdrop') }}</h2>
       <div class="bds">
         <button v-for="b in BACKDROPS" :key="b.id" class="bd" :class="{ active: state.cfg.theme.backdrop === b.id }" @click="state.cfg.theme.backdrop = b.id">
-          <span class="bd-prev" :style="{ background: b.bg }"><span class="bd-card" /><span class="bd-card s" /></span>
+          <span class="bd-prev swatch" :style="{ background: b.bg }"><span class="bd-card" /><span class="bd-card s" /></span>
           <span class="bd-name">{{ t('theme.backdrops.' + b.id) }}</span>
         </button>
       </div>

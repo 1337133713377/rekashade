@@ -40,13 +40,13 @@ async function resetAll() {
     <PageHeader :title="t('acc.title')" :subtitle="t('acc.subtitle')" />
     <div class="grid">
       <section class="glass card profile">
-        <div class="avatar" :style="{ background: `linear-gradient(135deg, ${GRADS[state.cfg.profile.avatar % GRADS.length]})` }">{{ initials }}</div>
+        <div class="avatar swatch" :style="{ background: `linear-gradient(135deg, ${GRADS[state.cfg.profile.avatar % GRADS.length]})` }">{{ initials }}</div>
         <div class="col grow">
           <label class="label-caps" for="pname">{{ t('acc.name') }}</label>
           <input id="pname" v-model="state.cfg.profile.name" class="input" maxlength="24" placeholder="Reka" spellcheck="false" />
           <div class="row">
             <span class="label-caps">{{ t('acc.avatar') }}</span>
-            <button v-for="(g, i) in GRADS" :key="g" class="grad" :class="{ active: state.cfg.profile.avatar === i }" :style="{ background: `linear-gradient(135deg, ${g})` }" :aria-label="'avatar ' + (i + 1)" @click="state.cfg.profile.avatar = i" />
+            <button v-for="(g, i) in GRADS" :key="g" class="grad swatch" :class="{ active: state.cfg.profile.avatar === i }" :style="{ background: `linear-gradient(135deg, ${g})` }" :aria-label="'avatar ' + (i + 1)" @click="state.cfg.profile.avatar = i" />
           </div>
           <p v-if="since" class="dim small">{{ t('acc.since', { date: since }) }}</p>
         </div>

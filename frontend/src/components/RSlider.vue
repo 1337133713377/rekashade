@@ -64,4 +64,13 @@ function reset() {
 .rs-thumb:hover { transform: scale(1.05); }
 .rs-thumb:active { cursor: grabbing; }
 .rs-thumb:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--a-soft), 0 4px 12px rgba(0, 0, 0, 0.45); }
+/* Windows contrast themes repaint backgrounds, which erased the track and
+   thumb: draw them with the theme's own colours instead. */
+@media (forced-colors: active) {
+  .rs-root { forced-color-adjust: none; }
+  .rs-track { background: GrayText; }
+  .rs-range { background: Highlight; }
+  .rs-thumb { background: ButtonText; border: 2px solid Canvas; box-shadow: none; }
+  .rs-thumb:focus-visible { outline: 2px solid Highlight; outline-offset: 1px; box-shadow: none; }
+}
 </style>

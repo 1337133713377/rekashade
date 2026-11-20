@@ -191,8 +191,15 @@ async function unlock() {
 
 .check { display: inline-flex; align-items: center; gap: 12px; font-weight: 650; cursor: pointer; }
 .check input { position: absolute; opacity: 0; pointer-events: none; }
-.check .box { width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; border: 1px solid var(--field-border); background: rgba(0, 0, 0, 0.25); color: transparent; transition: all var(--t-fast); }
-.check input:checked + .box { background: linear-gradient(135deg, var(--a2), var(--a3)); border-color: transparent; color: #fff; }
+.check .box { width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; border: 1px solid var(--field-border); background: rgba(0, 0, 0, 0.25); color: #fff; transition: all var(--t-fast); }
+/* Hidden, not just transparent: contrast themes force text colours back on. */
+.check .box :deep(svg) { visibility: hidden; }
+.check input:checked + .box :deep(svg) { visibility: visible; }
+.check input:checked + .box { background: linear-gradient(135deg, var(--a2), var(--a3)); border-color: transparent; }
+@media (forced-colors: active) {
+  .check .box { border: 2px solid ButtonText; }
+  .check input:checked + .box { forced-color-adjust: none; background: Highlight; border-color: Highlight; color: HighlightText; }
+}
 .check input:focus-visible + .box { outline: 2px solid var(--a2); outline-offset: 2px; }
 
 .right { display: flex; flex-direction: column; gap: 14px; min-width: 0; }

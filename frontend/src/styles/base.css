@@ -183,3 +183,12 @@ p { margin: 0; }
 @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
 @keyframes spin { to { transform: rotate(360deg); } }
 .spin { animation: spin 0.9s linear infinite; }
+
+/* ---------- Windows contrast themes (forced colours) ---------- */
+@media (forced-colors: active) {
+  /* Selection was shown with a tint, which forced colours remove. */
+  .active,
+  [data-state='on'] { outline: 2px solid Highlight; outline-offset: -2px; }
+  /* Colour pickers and previews are the content: keep their colours. */
+  .swatch { forced-color-adjust: none; }
+}

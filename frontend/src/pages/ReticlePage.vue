@@ -80,7 +80,7 @@ const reasonText = computed(() => {
         <OverlayPreview :reticle="r" :label="t('xh.actualSize')" scene="neon" />
         <div class="swatches" :class="{ off: r.source === 'custom' }">
           <span class="label-caps">{{ t('ret.color') }}</span>
-          <button v-for="c in SWATCHES" :key="c" class="sw" :class="{ active: r.color.toUpperCase() === c }" :style="{ background: c }" :aria-label="c" @click="state.cfg.reticle.color = c" />
+          <button v-for="c in SWATCHES" :key="c" class="sw swatch" :class="{ active: r.color.toUpperCase() === c }" :style="{ background: c }" :aria-label="c" @click="state.cfg.reticle.color = c" />
         </div>
         <RSlider v-model="state.cfg.reticle.size" :label="t('ret.size')" :min="12" :max="300" :def="56" :format="(v: number) => `${v} px`" />
         <div class="row two">
