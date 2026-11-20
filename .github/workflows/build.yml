@@ -1,0 +1,93 @@
+name: Build & release
+
+# Every push / pull request: tests + a full Windows build (downloadable as a
+# workflow artifact). Pushing a tag like v1.2.3: the same build is published
+# as a GitHub Release — which is what the in-app auto-updater installs.
+
+on:
+  push:
+    branches: ['**']
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install NSIS and the Wails CLI
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq nsis
+          go install github.com/wailsapp/wails/v2/cmd/wails@v2.17.1
+
+      - name: Work out the version
+        id: version
+        run: |
+          if [[ "$GITHUB_REF_TYPE" == "tag" ]]; then
+            V="${GITHUB_REF_NAME#v}"
+          else
+            V="$(jq -r .info.productVersion wails.json)-dev.${GITHUB_RUN_NUMBER}"
+          fi
+          echo "version=$V" >> "$GITHUB_OUTPUT"
+          # Windows version resources only accept numbers: 1.2.3-beta → 1.2.3
+          jq --arg v "${V%%-*}" '.info.productVersion = $v' wails.json > wails.tmp && mv wails.tmp wails.json
+          echo "Building Reka Shade $V"
+
+      - name: Go tests
+        run: go test ./internal/colorx/... ./internal/config/... ./internal/updater/...
+
+      - name: Build Windows app and installer
+        run: |
+          wails build -platform windows/amd64 -nsis -installscope user -webview2 embed -skipbindings -trimpath \
+            -ldflags "-s -w -X main.version=${{ steps.version.outputs.version }}"
+
+      - name: Go vet (Windows)
+        run: GOOS=windows GOARCH=amd64 go vet ./...
+
+      - name: Name files and write checksums
+        working-directory: build/bin
+        run: |
+          mv RekaShade-amd64-installer.exe "RekaShade-Setup-${{ steps.version.outputs.version }}.exe"
+          sha256sum RekaShade.exe "RekaShade-Setup-${{ steps.version.outputs.version }}.exe" > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RekaShade-${{ steps.version.outputs.version }}
+          path: |
+            build/bin/RekaShade.exe
+            build/bin/RekaShade-Setup-*.exe
+            build/bin/SHA256SUMS.txt
+
+      - name: Publish GitHub Release
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Reka Shade ${{ steps.version.outputs.version }}
+          generate_release_notes: true
+          prerelease: ${{ contains(steps.version.outputs.version, '-') }}
+          files: |
+            build/bin/RekaShade.exe
+            build/bin/RekaShade-Setup-*.exe
+            build/bin/SHA256SUMS.txt

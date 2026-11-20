@@ -1,0 +1,36 @@
+{
+  "presets": [
+    { "id": "stock", "name": "Stock", "builtin": true, "tags": ["neutral"],
+      "params": { "hue": 0, "saturation": 100, "vibrance": 100, "brightness": 100, "contrast": 100, "gamma": 1.0, "temperature": 6500, "red": 100, "green": 100, "blue": 100 } },
+    { "id": "vivid-pop", "name": "Vivid Pop", "builtin": true, "tags": ["vivid"],
+      "params": { "hue": 0, "saturation": 140, "vibrance": 130, "brightness": 100, "contrast": 104, "gamma": 1.0, "temperature": 6500, "red": 100, "green": 100, "blue": 100 } },
+    { "id": "golden-hour", "name": "Golden Hour", "builtin": true, "tags": ["warm", "cinematic"],
+      "params": { "hue": 6, "saturation": 125, "vibrance": 115, "brightness": 102, "contrast": 106, "gamma": 1.05, "temperature": 5200, "red": 104, "green": 100, "blue": 94 } },
+    { "id": "ultra-vivid", "name": "Ultra Vivid", "builtin": true, "tags": ["vivid", "competitive"],
+      "params": { "hue": 0, "saturation": 190, "vibrance": 170, "brightness": 100, "contrast": 106, "gamma": 1.0, "temperature": 6500, "red": 100, "green": 100, "blue": 100 } },
+    { "id": "clarity", "name": "Competitive Clarity", "builtin": true, "tags": ["competitive"],
+      "params": { "hue": 0, "saturation": 130, "vibrance": 125, "brightness": 100, "contrast": 110, "gamma": 1.12, "temperature": 6700, "red": 100, "green": 102, "blue": 100 } },
+    { "id": "night-vision", "name": "Night Vision", "builtin": true, "tags": ["dark", "competitive"],
+      "params": { "hue": 0, "saturation": 115, "vibrance": 110, "brightness": 112, "contrast": 96, "gamma": 1.35, "temperature": 6500, "red": 100, "green": 100, "blue": 100 } },
+    { "id": "desert-glow", "name": "Desert Glow", "builtin": true, "tags": ["warm"],
+      "params": { "hue": 8, "saturation": 150, "vibrance": 135, "brightness": 102, "contrast": 104, "gamma": 1.04, "temperature": 5600, "red": 106, "green": 100, "blue": 92 } },
+    { "id": "arctic", "name": "Arctic", "builtin": true, "tags": ["cool"],
+      "params": { "hue": 0, "saturation": 110, "vibrance": 110, "brightness": 100, "contrast": 104, "gamma": 1.0, "temperature": 8200, "red": 96, "green": 100, "blue": 106 } },
+    { "id": "neon-nights", "name": "Neon Nights", "builtin": true, "tags": ["vivid", "cool"],
+      "params": { "hue": 12, "saturation": 165, "vibrance": 150, "brightness": 100, "contrast": 108, "gamma": 1.06, "temperature": 7200, "red": 100, "green": 96, "blue": 108 } },
+    { "id": "cinematic", "name": "Cinematic", "builtin": true, "tags": ["cinematic"],
+      "params": { "hue": -4, "saturation": 92, "vibrance": 100, "brightness": 98, "contrast": 112, "gamma": 0.95, "temperature": 5800, "red": 102, "green": 99, "blue": 96 } },
+    { "id": "noir", "name": "Noir", "builtin": true, "tags": ["mono"],
+      "params": { "hue": 0, "saturation": 0, "vibrance": 100, "brightness": 100, "contrast": 118, "gamma": 1.0, "temperature": 6500, "red": 100, "green": 100, "blue": 100 } }
+  ],
+  "binds": [
+    { "action": "toggleTuning", "key": 86, "ctrl": true, "alt": true, "shift": false },
+    { "action": "toggleCrosshair", "key": 67, "ctrl": true, "alt": true, "shift": false },
+    { "action": "nextPreset", "key": 78, "ctrl": true, "alt": true, "shift": false },
+    { "action": "prevPreset", "key": 66, "ctrl": true, "alt": true, "shift": false },
+    { "action": "toggleStretch", "key": 83, "ctrl": true, "alt": true, "shift": false },
+    { "action": "showApp", "key": 82, "ctrl": true, "alt": true, "shift": false },
+    { "action": "panic", "key": 8, "ctrl": true, "alt": true, "shift": false },
+    { "action": "holdHide", "key": 0, "ctrl": false, "alt": false, "shift": false }
+  ]
+}

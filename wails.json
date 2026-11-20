@@ -1,0 +1,20 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "RekaShade",
+  "outputfilename": "RekaShade",
+  "frontend:install": "npm ci",
+  "frontend:build": "npm run build",
+  "frontend:dev:watcher": "npm run dev",
+  "frontend:dev:serverUrl": "auto",
+  "wailsjsdir": "./build/wailsjs",
+  "author": {
+    "name": "Reka"
+  },
+  "info": {
+    "companyName": "Reka",
+    "productName": "Reka Shade",
+    "productVersion": "1.0.0",
+    "copyright": "© 2026 Reka",
+    "comments": "Display tuning, crosshair overlay and Windows optimizer — never touches your games."
+  }
+}

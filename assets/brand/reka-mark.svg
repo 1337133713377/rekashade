@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="rk-g" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F3E8FF"/>
+      <stop offset="0.38" stop-color="#B794FF"/>
+      <stop offset="0.72" stop-color="#8B5CF6"/>
+      <stop offset="1" stop-color="#E879F9"/>
+    </linearGradient>
+    <radialGradient id="rk-dot" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="0.7" stop-color="#FCE7FF"/>
+      <stop offset="1" stop-color="#F0ABFC"/>
+    </radialGradient>
+    <mask id="rk-m" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64">
+      <rect width="64" height="64" fill="#fff"/>
+      <circle cx="32" cy="22" r="6.6" fill="#000"/>
+    </mask>
+  </defs>
+  <g mask="url(#rk-m)" fill="url(#rk-g)">
+    <path d="M11 15 L18 8 H21 V56 H11 Z"/>
+    <path d="M20 8 H32 A14 14 0 0 1 32 36 H20 Z"/>
+    <path d="M26.5 32 H37.5 L54 56 H43 Z"/>
+  </g>
+  <circle cx="32" cy="22" r="2.7" fill="url(#rk-dot)"/>
+</svg>
