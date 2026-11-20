@@ -18,6 +18,7 @@ import (
 	"os"
 	"runtime"
 	"sync"
+	"time"
 	"unsafe"
 
 	"golang.org/x/sys/windows"
@@ -163,9 +164,18 @@ func (h *Host) Call(f func()) {
 		f()
 		return
 	}
+	select {
+	case <-h.stopped:
+		return // thread gone (shutting down): nothing can run there any more
+	default:
+	}
 	done := make(chan struct{})
 	h.Post(func() { defer close(done); f() })
-	<-done
+	select {
+	case <-done:
+	case <-h.stopped:
+	case <-time.After(5 * time.Second): // never wedge a caller forever
+	}
 }
 
 // Stop removes the tray icon, destroys the windows and ends the thread.
