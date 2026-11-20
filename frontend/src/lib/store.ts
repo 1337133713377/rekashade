@@ -160,7 +160,11 @@ export function paramsFor(id: string): ColorParams {
   }
 }
 
-export const currentParams = computed(() => (currentDisplay.value ? paramsFor(currentDisplay.value.id) : neutralParams()))
+export const currentParams = computed(() => {
+  if (currentDisplay.value) return paramsFor(currentDisplay.value.id)
+  // No display known (yet): hue and saturation are global, keep them live.
+  return { ...neutralParams(), hue: state.cfg.tuning.hue, saturation: state.cfg.tuning.saturation }
+})
 
 export function presetById(id: string): Preset | undefined {
   return state.cfg.presets?.find((p) => p.id === id)
@@ -286,6 +290,22 @@ function flushSave() {
   api.saveConfig(JSON.parse(json)).catch(fail)
 }
 
+/** Asks the backend again for monitors if the first answer was empty. */
+async function retryDisplays() {
+  for (const delay of [500, 1500, 3000, 6000]) {
+    await new Promise((r) => setTimeout(r, delay))
+    if (state.displays.length) return
+    try {
+      const list = await api.refreshDisplays()
+      if (list?.length) {
+        state.displays = list
+        if (!state.displays.some((d) => d.id === state.selected)) state.selected = (state.displays.find((d) => d.primary) ?? state.displays[0]).id
+        return
+      }
+    } catch { /* keep trying */ }
+  }
+}
+
 export async function boot() {
   const b = await api.bootstrap()
   state.version = b.version
@@ -333,5 +353,6 @@ export async function boot() {
 
   scheduleOverlay()
   state.ready = true
+  if (!state.displays.length) void retryDisplays()
   if (state.updated) toast('success', t('about.updatedTo', { v: state.version }))
 }

@@ -20,7 +20,11 @@ import (
 	"github.com/1337133713377/rekashade/internal/win"
 )
 
-const mainWindowClass = "RekaShadeWindow"
+const (
+	mainWindowClass = "RekaShadeWindow"
+	minWindowWidth  = 940
+	minWindowHeight = 600
+)
 
 // App is bound to the UI: every exported method is callable from JavaScript
 // as window.go.main.App.<Method>.
@@ -34,9 +38,10 @@ type App struct {
 	state    config.State
 	displays []display.Info
 
-	applyMu sync.Mutex // serialises pushes to the display stack
-	host    *host.Host
-	engine  *display.Engine
+	applyMu   sync.Mutex    // serialises pushes to the display stack
+	applyKick chan struct{} // coalesces tuning updates while sliders move
+	host      *host.Host
+	engine    *display.Engine
 
 	ov      overlayRuntime
 	stretch stretchRuntime
@@ -44,6 +49,7 @@ type App struct {
 	watch   watchRuntime
 
 	selfPID      uint32
+	ready        chan struct{} // closed once startup() has finished
 	stopCh       chan struct{}
 	quitting     atomic.Bool
 	shutdownOnce sync.Once
@@ -53,7 +59,8 @@ type App struct {
 
 // NewApp loads settings; native work starts in startup().
 func NewApp(args launchArgs) *App {
-	a := &App{args: args, stopCh: make(chan struct{}), selfPID: uint32(os.Getpid())}
+	a := &App{args: args, stopCh: make(chan struct{}), ready: make(chan struct{}), applyKick: make(chan struct{}, 1), selfPID: uint32(os.Getpid())}
+	go a.tuningLoop()
 	store, err := config.NewStore()
 	if err == nil {
 		a.store = store
@@ -71,6 +78,13 @@ func NewApp(args launchArgs) *App {
 
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+	// Wails runs OnStartup in parallel with the page loading: the UI's first
+	// calls wait on this so they never see an empty display list.
+	defer func() {
+		close(a.ready)
+		a.emit("rs:displays", a.GetDisplays())
+		a.emitStatus()
+	}()
 	go updater.Cleanup()
 
 	h, err := host.Start(host.Callbacks{
@@ -131,7 +145,41 @@ func (a *App) startup(ctx context.Context) {
 	}
 }
 
-func (a *App) domReady(ctx context.Context) {}
+func (a *App) domReady(ctx context.Context) { a.fitWindowToScreen(ctx) }
+
+// fitWindowToScreen shrinks the window when the screen (with Windows display
+// scaling) is smaller than the default size, so nothing ends up off-screen;
+// pages scroll instead.
+func (a *App) fitWindowToScreen(ctx context.Context) {
+	screens, err := runtime.ScreenGetAll(ctx)
+	if err != nil || len(screens) == 0 {
+		return
+	}
+	scr := screens[0]
+	for _, sc := range screens {
+		if sc.IsCurrent {
+			scr = sc
+			break
+		}
+	}
+	sw, sh := scr.Size.Width, scr.Size.Height
+	if sw <= 0 || sh <= 0 {
+		return
+	}
+	w, h := runtime.WindowGetSize(ctx)
+	maxW, maxH := sw-40, sh-72 // leave room for the taskbar
+	if w <= maxW && h <= maxH {
+		return
+	}
+	if w > maxW {
+		w = max(maxW, minWindowWidth)
+	}
+	if h > maxH {
+		h = max(maxH, minWindowHeight)
+	}
+	runtime.WindowSetSize(ctx, w, h)
+	runtime.WindowCenter(ctx)
+}
 
 func (a *App) beforeClose(ctx context.Context) bool {
 	if a.quitting.Load() {
@@ -244,9 +292,31 @@ func (a *App) updateConfig(f func(c *config.Config)) config.Config {
 	return next
 }
 
+// tuningLoop applies the latest tuning whenever it changes. Slider drags
+// send many updates per second; if the display is slow to accept a gamma
+// ramp, intermediate values are skipped instead of piling up.
+func (a *App) tuningLoop() {
+	for {
+		select {
+		case <-a.stopCh:
+			return
+		case <-a.applyKick:
+			safely(a.applyTuning)
+			a.emitStatus()
+		}
+	}
+}
+
+func (a *App) scheduleTuning() {
+	select {
+	case a.applyKick <- struct{}{}:
+	default: // an update is already pending; it will pick up the latest values
+	}
+}
+
 func (a *App) applyChanges(old, next config.Config) {
 	if !reflect.DeepEqual(old.Tuning, next.Tuning) || !reflect.DeepEqual(old.Presets, next.Presets) || !reflect.DeepEqual(old.Rules, next.Rules) {
-		a.applyTuning()
+		a.scheduleTuning()
 	}
 	if old.Overlay != next.Overlay {
 		a.applyOverlay()
@@ -287,7 +357,16 @@ type Bootstrap struct {
 	Mock           bool           `json:"mock"`
 }
 
+// waitReady blocks until startup() is done (bounded, so the UI never hangs).
+func (a *App) waitReady() {
+	select {
+	case <-a.ready:
+	case <-time.After(20 * time.Second):
+	}
+}
+
 func (a *App) Bootstrap() Bootstrap {
+	a.waitReady()
 	a.mu.Lock()
 	cfg := a.cfg
 	a.mu.Unlock()

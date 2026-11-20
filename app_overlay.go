@@ -79,6 +79,7 @@ func (a *App) SetOverlayImage(dataURL string, anchorX, anchorY int) error {
 	if err != nil {
 		return err
 	}
+	a.waitReady() // the overlay window is created during startup
 	if err := a.pushOverlayPNG(pngBytes, anchorX, anchorY); err != nil {
 		return err
 	}

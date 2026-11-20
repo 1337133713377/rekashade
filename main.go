@@ -19,7 +19,7 @@ import (
 var assets embed.FS
 
 // version is set at build time: -ldflags "-X main.version=1.2.3"
-var version = "1.0.0"
+var version = "1.0.1"
 
 type launchArgs struct {
 	minimized bool
@@ -64,8 +64,8 @@ func main() {
 		Title:            "Reka Shade",
 		Width:            1160,
 		Height:           800,
-		MinWidth:         1040,
-		MinHeight:        720,
+		MinWidth:         minWindowWidth,
+		MinHeight:        minWindowHeight,
 		Frameless:        true,
 		StartHidden:      args.minimized,
 		BackgroundColour: &options.RGBA{R: 11, G: 9, B: 20, A: 255},

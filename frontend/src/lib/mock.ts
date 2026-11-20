@@ -82,7 +82,10 @@ export function createMock(): Backend {
   return {
     async bootstrap() {
       return {
-        version: '1.0.0', config: JSON.parse(JSON.stringify(cfg)), displays: DISPLAYS, status: status(), firstRun: !localStorage.getItem(KEY),
+        version: '1.0.0', config: JSON.parse(JSON.stringify(cfg)),
+        // Test switch: simulate a backend that answered before it listed the monitors.
+        displays: localStorage.getItem('rekashade-mock-no-displays') ? [] : DISPLAYS,
+        status: status(), firstRun: !localStorage.getItem(KEY),
         updated: false, systemLanguage: navigator.language.startsWith('fr') ? 'fr' : 'en', windowsBuild: 22631, dataDir: 'C:\\Users\\you\\AppData\\Roaming\\RekaShade', mock: true,
       }
     },
