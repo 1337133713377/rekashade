@@ -100,10 +100,17 @@ func get(ctx context.Context, c *http.Client, rawURL string) (*http.Response, er
 	}
 	if resp.StatusCode != http.StatusOK {
 		resp.Body.Close()
-		return nil, fmt.Errorf("GitHub answered %s", resp.Status)
+		return nil, &statusError{code: resp.StatusCode, status: resp.Status}
 	}
 	return resp, nil
 }
+
+type statusError struct {
+	code   int
+	status string
+}
+
+func (e *statusError) Error() string { return "GitHub answered " + e.status }
 
 type ghRelease struct {
 	TagName     string `json:"tag_name"`
@@ -124,6 +131,10 @@ type ghRelease struct {
 func CheckLatest(ctx context.Context, current string) (Check, error) {
 	res := Check{Current: current, CheckedAt: time.Now().UTC().Format(time.RFC3339)}
 	resp, err := get(ctx, client(20*time.Second), "https://api.github.com/repos/"+Repo+"/releases/latest")
+	var se *statusError
+	if errors.As(err, &se) && se.code == http.StatusNotFound {
+		return res, nil // no release published yet: nothing to update to
+	}
 	if err != nil {
 		return res, err
 	}

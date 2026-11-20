@@ -1,6 +1,7 @@
 package updater
 
 import (
+	"errors"
 	"net/url"
 	"testing"
 )
@@ -48,5 +49,13 @@ func TestOnlyGitHubHostsAllowed(t *testing.T) {
 		if err := checkURL(u); err == nil {
 			t.Errorf("%s should be refused", s)
 		}
+	}
+}
+
+func TestNoReleaseYetIsNotAnError(t *testing.T) {
+	err := error(&statusError{code: 404, status: "404 Not Found"})
+	var se *statusError
+	if !errors.As(err, &se) || se.code != 404 {
+		t.Fatal("status error should unwrap with its code")
 	}
 }
